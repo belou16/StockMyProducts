@@ -1,13 +1,13 @@
 # StockMyProducts
 
 ## Description
-Projet étudiant : Application de gestion de stock (Inventory Management System).
-Il s'agit d'une API REST sécurisée développée en Node.js permettant de gérer des produits, leur stock, leurs catégories ainsi que les mouvements d'entrée et de sortie.
+Projet etudiant : Application de gestion de stock (Inventory Management System).
+Il s'agit d'une API REST securisee developpee en Node.js permettant de gerer des produits, leur stock, leurs categories ainsi que les mouvements d'entree et de sortie.
 
 ## Objectifs
 - Concevoir une API REST professionnelle.
-- Implémenter un système d'authentification sécurisé (JWT).
-- Gérer un stock avec cohérence et traçabilité.
+- Implementer un systeme d'authentification securise (JWT).
+- Gerer un stock avec coherence et tracabilite.
 
 ## Pré-requis
 Avant de commencer, assurez-vous d'avoir installé :
@@ -27,8 +27,8 @@ Avant de commencer, assurez-vous d'avoir installé :
    npm install express mongoose dotenv jsonwebtoken bcrypt cors helmet express-rate-limit
    ```
 
-3. **Installation des outils de développement** :
-   Pour faciliter le développement (redémarrage automatique du serveur), installez `nodemon` :
+3. **Installation des outils de developpement** :
+   Pour faciliter le developpement (redemarrage automatique du serveur), installez `nodemon` :
    ```bash
    npm install --save-dev nodemon
    ```
