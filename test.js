@@ -313,8 +313,8 @@ async function runAllTests() {
     test('Get all users (admin)', res.status === 200, 'Get all users failed');
 
     // Regular user cannot view all users
-    res = await makeRequest('GET', '/api/users', null, { Authorization: `Bearer ${adminToken}` });
-    test('User access control', res.status === 200, 'User access control failed');
+    res = await makeRequest('GET', '/api/users', null, { Authorization: `Bearer ${managerToken}` });
+    test('User access control', res.status === 403, 'User access control failed');
 
     // Get specific user by ID
     res = await makeRequest('GET', `/api/users/${adminId}`, null, { Authorization: `Bearer ${adminToken}` });
