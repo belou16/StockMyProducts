@@ -29,6 +29,13 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
+    // Vérifier que le compte de l'utilisateur est toujours actif
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: 'Compte utilisateur désactivé',
+      });
+    }
     // Attacher les informations de l'utilisateur à la requête
     req.user = {
       id: user._id,
