@@ -179,12 +179,12 @@ async function runAllTests() {
     }, { Authorization: `Bearer ${managerToken}` });
     test('Update category', res.status === 200, 'Update category failed');
 
-    // Verify regular user cannot update category
+    // Verify regular (non-privileged) user cannot update category
     res = await makeRequest('PUT', `/api/categories/${categoryId}`, {
       name: `Unauthorized Update ${Date.now()}`,
-    }, { Authorization: `Bearer ${adminToken}` });
-    // Regular user with admin token should fail for authorization
-    test('Authorization check on category update', res.status === 200 || res.status === 403, 'Auth check failed');
+    }, { Authorization: `Bearer ${userToken}` });
+    // Regular user should be forbidden from updating category
+    test('Authorization check on category update', res.status === 403, 'Auth check failed');
 
     console.log();
 
