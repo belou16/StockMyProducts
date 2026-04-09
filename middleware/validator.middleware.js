@@ -1,26 +1,24 @@
-const { body, validationResult, param } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 
-/**
- * Middleware pour valider les IDs MongoDB dans les route parameters
- */
+// Vérifier si l'ID MongoDB est valide
 const validateMongoId = (req, res, next) => {
   const { id } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({
       success: false,
       message: "ID invalide",
     });
   }
+
   next();
 };
 
-/**
- * Middleware pour gérer les erreurs de validation
- * Retourne les erreurs de validation au client
- */
+// Vérifier s'il y a des erreurs de validation et les envoyer
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -31,25 +29,14 @@ const handleValidationErrors = (req, res, next) => {
       })),
     });
   }
+
   next();
 };
 
-/**
- * Règles de validation pour l'authentification
- */
+// Validation pour l'inscription
 const validateRegister = [
-  body("firstName")
-    .trim()
-    .notEmpty()
-    .withMessage("Le prénom est requis")
-    .isLength({ min: 2 })
-    .withMessage("Le prénom doit contenir au moins 2 caractères"),
-  body("lastName")
-    .trim()
-    .notEmpty()
-    .withMessage("Le nom est requis")
-    .isLength({ min: 2 })
-    .withMessage("Le nom doit contenir au moins 2 caractères"),
+  body("firstName").trim().notEmpty().withMessage("Le prénom est requis"),
+  body("lastName").trim().notEmpty().withMessage("Le nom est requis"),
   body("email").isEmail().withMessage("Email invalide").normalizeEmail(),
   body("password")
     .isLength({ min: 6 })
@@ -60,105 +47,47 @@ const validateRegister = [
     .withMessage("Rôle invalide"),
 ];
 
+// Validation pour la connexion
 const validateLogin = [
-  body("email").isEmail().withMessage("Email invalide").normalizeEmail(),
+  body("email").isEmail().withMessage("Email invalide"),
   body("password").notEmpty().withMessage("Le mot de passe est requis"),
 ];
 
-/**
- * Règles de validation pour les catégories
- */
+// Validation pour les catégories
 const validateCategory = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Le nom est requis")
-    .isLength({ min: 3, max: 50 })
-    .withMessage("Le nom doit contenir entre 3 et 50 caractères"),
-  body("description")
-    .optional()
-    .trim()
-    .isLength({ max: 500 })
-    .withMessage("La description ne peut pas dépasser 500 caractères"),
+  body("name").trim().notEmpty().withMessage("Le nom est requis"),
+  body("description").optional().trim(),
 ];
 
-/**
- * Règles de validation pour les produits
- */
+// Validation pour les produits
 const validateProduct = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Le nom est requis")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Le nom doit contenir entre 3 et 100 caractères"),
-  body("description")
-    .optional()
-    .trim()
-    .isLength({ max: 1000 })
-    .withMessage("La description ne peut pas dépasser 1000 caractères"),
-  body("sku").trim().notEmpty().withMessage("Le SKU est requis").toUpperCase(),
-  body("category")
-    .notEmpty()
-    .withMessage("La catégorie est requise")
-    .isMongoId()
-    .withMessage("ID de catégorie invalide"),
-  body("price")
-    .isFloat({ min: 0 })
-    .withMessage("Le prix doit être un nombre positif"),
-  body("stock")
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage("Le stock doit être un nombre positif"),
+  body("name").trim().notEmpty().withMessage("Le nom est requis"),
+  body("description").optional().trim(),
+  body("sku").trim().notEmpty().withMessage("Le SKU est requis"),
+  body("category").notEmpty().withMessage("La catégorie est requise"),
+  body("price").isFloat({ min: 0 }).withMessage("Le prix doit être positif"),
+  body("stock").optional().isInt({ min: 0 }),
 ];
 
-/**
- * Règles de validation pour les mouvements de stock
- */
+// Validation pour les mouvements de stock
 const validateStockMovement = [
-  body("product")
-    .notEmpty()
-    .withMessage("Le produit est requis")
-    .isMongoId()
-    .withMessage("ID de produit invalide"),
+  body("product").notEmpty().withMessage("Le produit est requis"),
   body("quantity")
     .isInt({ min: 1 })
     .withMessage("La quantité doit être au moins 1"),
   body("reason")
     .optional()
-    .isIn(["purchase", "sale", "return", "adjustment", "damage", "other"])
-    .withMessage("Raison invalide"),
-  body("details")
-    .optional()
-    .trim()
-    .isLength({ max: 500 })
-    .withMessage("Les détails ne peuvent pas dépasser 500 caractères"),
+    .isIn(["purchase", "sale", "return", "adjustment", "damage", "other"]),
+  body("details").optional().trim(),
   body("reference").optional().trim(),
 ];
 
-/**
- * Règles de validation pour la mise à jour des utilisateurs
- */
+// Validation pour la mise à jour d'utilisateur
 const validateUserUpdate = [
-  body("firstName")
-    .optional()
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("Le prénom doit contenir au moins 2 caractères"),
-  body("lastName")
-    .optional()
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("Le nom doit contenir au moins 2 caractères"),
-  body("email")
-    .optional()
-    .isEmail()
-    .withMessage("Email invalide")
-    .normalizeEmail(),
-  body("role")
-    .optional()
-    .isIn(["admin", "manager", "user"])
-    .withMessage("Rôle invalide"),
+  body("firstName").optional().trim(),
+  body("lastName").optional().trim(),
+  body("email").optional().isEmail().withMessage("Email invalide"),
+  body("role").optional().isIn(["admin", "manager", "user"]),
 ];
 
 module.exports = {
