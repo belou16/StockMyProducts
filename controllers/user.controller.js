@@ -1,9 +1,6 @@
 const User = require("../models/User");
 
-/**
- * Obtenir tous les utilisateurs
- * GET /api/users
- */
+// recupe tous les user actif | GET /api/users
 exports.getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({ isActive: true });
@@ -18,10 +15,7 @@ exports.getAllUsers = async (req, res, next) => {
   }
 };
 
-/**
- * Obtenir un utilisateur par ID
- * GET /api/users/:id
- */
+// recupe user par id | GET /api/users/:id
 exports.getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
@@ -29,7 +23,7 @@ exports.getUserById = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Utilisateur non trouvé",
+        message: "user not found",
       });
     }
 
@@ -42,19 +36,16 @@ exports.getUserById = async (req, res, next) => {
   }
 };
 
-/**
- * Mettre à jour un utilisateur
- * PUT /api/users/:id
- */
+// update user | PUT /api/users/:id
 exports.updateUser = async (req, res, next) => {
   try {
     const { firstName, lastName, email, role } = req.body;
 
-    // Vérifier que l'utilisateur ne modifie pas son propre rôle
+    // anti auto promotion (seul admin peut modifier le role)
     if (role && req.user.id !== req.params.id && req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "Seul un administrateur peut changer les rôles",
+        message: "vous ne pouvez pas modifier votre role",
       });
     }
 
@@ -66,7 +57,7 @@ exports.updateUser = async (req, res, next) => {
       updatedAt: Date.now(),
     };
 
-    // Supprimer les champs undefined
+    //delete champ undefined (pour eviter de reset les champ pas modifier)
     Object.keys(updateData).forEach(
       (key) => updateData[key] === undefined && delete updateData[key],
     );
@@ -79,13 +70,13 @@ exports.updateUser = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Utilisateur non trouvé",
+        message: "user not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Utilisateur mis à jour avec succès",
+      message: "modification reussi",
       data: user,
     });
   } catch (error) {
@@ -93,10 +84,7 @@ exports.updateUser = async (req, res, next) => {
   }
 };
 
-/**
- * Désactiver un utilisateur (soft delete)
- * DELETE /api/users/:id
- */
+// desactive user (soft delete) | DELETE /api/users/:id
 exports.deactivateUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(
@@ -108,13 +96,13 @@ exports.deactivateUser = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Utilisateur non trouvé",
+        message: "user not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Utilisateur désactivé avec succès",
+      message: "le compte du user est desactiver",
       data: user,
     });
   } catch (error) {
