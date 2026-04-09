@@ -39,8 +39,8 @@ const validateRegister = [
   body("lastName").trim().notEmpty().withMessage("Le nom est requis"),
   body("email").isEmail().withMessage("Email invalide").normalizeEmail(),
   body("password")
-    .isLength({ min: 6 })
-    .withMessage("Le mot de passe doit contenir au moins 6 caractères"),
+    .isLength({ min: 8 })
+    .withMessage("Le mot de passe doit contenir au moins 8 caractères"),
   body("role")
     .optional()
     .isIn(["admin", "manager", "user"])

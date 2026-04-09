@@ -15,11 +15,6 @@ const {
 
 const router = express.Router();
 
-/**
- * Routes de gestion des utilisateurs
- * Seulement les administrateurs et les managers peuvent accéder à ces routes
- */
-
 // ================ ROUTE GESTION DES USER ==========================
 // Admin && Manager peuvent acceder au route suivante
 // (Update role valide seulement par Admin)

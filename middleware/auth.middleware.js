@@ -14,10 +14,9 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
-    // Vérifier et décoder le token
+    // verif et decode token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Récupérer l'utilisateur de la base de données
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(401).json({
@@ -26,7 +25,6 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
-    // Attacher l'utilisateur à la requête
     req.user = {
       id: user._id,
       firstName: user.firstName,
